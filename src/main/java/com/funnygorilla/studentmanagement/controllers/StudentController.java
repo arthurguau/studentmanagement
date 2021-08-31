@@ -123,7 +123,7 @@ public class StudentController implements StudentAPI {
 	
 	/**
 	 * 
-	 * @author guson
+	 * @author FunnyGorilla
 	 *
 	 */
 	private static class Converter {
