@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  database:
+     image: mysql/mysql-server:8.0
+     # environment variables for starup script
+     # container will use these variables to start the container with these variables
+     container_name: mysql-arthur
+     # port mapping 
+     ports: 
+       - "3306:3306" 
+     environment:
+       - MYSQL_ROOT_PASSWORD=root
+       - MYSQL_USER=tester
+       - MYSQL_PASSWORD=tester
+     healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 3     
+     # Mount init.sql file to automatically run and create tabls for us.
+     # everything in docker-entrypoint-initdb.d folder
+     # is executed as soon as container is up and running.  
+     volumes:
+       - "./db/init-student-mysql.sql:/docker-entrypoint-initdb.d/init-student-mysql.sql"
+       
+  student-app:
+    restart: on-failure
+    build: ./
+    expose: 
+      - "8083"
+    container_name: studentmanagement
+    ports:
+      - 8083:8083
+    depends_on: 
+      database:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-arthur:3306/studentmanagement
+      SPRING_DATASOURCE_USERNAME: tester
+      SPRING_DATASOURCE_PASSWORD: tester
+    

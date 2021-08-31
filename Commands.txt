@@ -1,0 +1,8 @@
+
+//-- build image
+docker build -t springio/studentmanagement-sql .
+
+//-- run image
+docker run -p 8080:8080 springio/studentmanagement-sql
+
+
